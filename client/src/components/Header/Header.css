@@ -1,0 +1,13 @@
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+.title {
+  font-family: "Sacramento", cursive;
+  font-size: 60px;
+  font-weight: 700;
+  justify-content: center;
+  text-align: center;
+}
+
+a {
+  color: antiquewhite;
+}
