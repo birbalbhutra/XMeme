@@ -33,18 +33,22 @@ app.get("/memes", (req, res) => {
     .catch((err) => res.status(400).json("Error:" + err));
 });
 
+app.get("/memes/:_id", (req, res) => {
+  let _id = req.params._id;
+  Meme.findById({ _id: _id })
+    .then((meme) => res.json(meme))
+    .catch((err) => res.status(400).json("Error:" + err));
+});
+
 // valid image url for testing
 // https://www.lifesize.com/wp-content/uploads/2020/10/Meme-header-2.jpeg
 
 // POST method for adding new memes
 app.post("/memes", (req, res) => {
-  req.body.id = count;
-  count = count + 1;
   let username = req.body.username;
   let caption = req.body.caption;
-  let id = req.body.id;
   let url = req.body.url;
-  const newMeme = new Meme({ id, username, caption, url });
+  const newMeme = new Meme({ username, caption, url });
 
   newMeme
     .save()
@@ -52,27 +56,26 @@ app.post("/memes", (req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-// app.patch("/memes/:id", (req, res) => {
-//   let id = req.params.id;
-//   Meme.findById({ id: id })
-//     .then((meme) => {
-//       meme.id = id;
-//       meme.username = req.body.username;
-//       meme.caption = req.body.caption;
-//       meme.url = req.body.url;
+app.post("/update/:_id", (req, res) => {
+  let _id = req.params._id;
+  Meme.findByIdAndUpdate({ _id: _id })
+    .then((meme) => {
+      meme.username = req.body.username;
+      meme.caption = req.body.caption;
+      meme.url = req.body.url;
 
-//       meme
-//         .save()
-//         .then(() => res.json("Meme updated"))
-//         .catch((err) => res.status(400).json("Error: " + err));
-//     })
-//     .catch((err) => res.status(400).json("Error: " + err));
-// });
+      meme
+        .save()
+        .then(() => res.json("Meme updated"))
+        .catch((err) => res.status(400).json("Error: " + err));
+    })
+    .catch((err) => res.status(400).json("Error: " + err));
+});
 
 // DELETE method to delete a meme
-app.delete("/memes/:id", (req, res) => {
-  let id = req.params.id;
-  Meme.deleteOne({ id: id })
+app.delete("/memes/:_id", (req, res) => {
+  let _id = req.params._id;
+  Meme.deleteOne({ _id: _id })
     .then(() => res.json("Data deleted"))
     .catch((err) => res.status(400).json("Error: " + err));
 });

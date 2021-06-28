@@ -4,14 +4,24 @@ import axios from "axios";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
-import "./Contribute.css";
+// import "./EditMeme.css";
 
-const Contribute = () => {
-  // Insert a New Meme
+const EditMeme = (_id) => {
+  //   Insert a New Meme
+  const [newValue, setNewValue] = useState({});
+
+  // Getting id from props
+  const id = _id.match.params.id;
+
+  // Getting the whole object using get request
+  axios
+    .get("http://localhost:5000/memes/" + id)
+    .then((res) => setNewValue(res.data));
+
   const [newMeme, setNewMeme] = useState({
-    username: "",
-    caption: "",
-    url: "",
+    username: newValue.username,
+    caption: newValue.caption,
+    url: newValue.url,
   });
 
   // Updating the data from form in State
@@ -23,10 +33,20 @@ const Contribute = () => {
     }));
   }
 
-  function handleSubmit(e) {
+  function handleEdit(e) {
     e.preventDefault();
+    // Not updating username
+    const username = newValue.username;
+    let caption = newMeme.caption;
+    if (newMeme.caption === undefined) {
+      caption = newValue.caption;
+    }
 
-    const { username, caption, url } = newMeme;
+    let url = newMeme.url;
+    if (newMeme.url === undefined) {
+      url = newValue.url;
+    }
+    // const { caption, url } = newMeme;
 
     const meme = {
       username,
@@ -34,49 +54,27 @@ const Contribute = () => {
       url,
     };
 
+    console.log(meme);
     // Sending data to the database
     axios
-      .post("http://localhost:5000/memes", meme)
+      .post("http://localhost:5000/update/" + id, meme)
       .then((res) => console.log(res.data))
       .catch((err) => console.log(err));
-
-    // Clearing form field after submission
-    // document.getElementById("username").value = "";
-    // document.getElementById("caption").value = "";
-    // document.getElementById("url").value = "";
 
     window.location = "/memes";
   }
 
   return (
     <div>
-      <Form
-        className="form"
-        onSubmit={handleSubmit}
-        method="POST"
-        action="/memes"
-        id="shareMeme"
-      >
-        <Form.Group>
-          <Form.Label>Meme Owner</Form.Label>
-          <Form.Control
-            type="text"
-            name="username"
-            id="username"
-            value={newMeme.username}
-            placeholder="Enter your name"
-            onChange={handleInputChange}
-            required
-          />
-        </Form.Group>
+      <Form className="form" onSubmit={handleEdit} method="POST" id="shareMeme">
         <Form.Group>
           <Form.Label>Caption</Form.Label>
           <Form.Control
             type="text"
             name="caption"
             id="caption"
-            value={newMeme.caption}
-            placeholder="Caption"
+            defaultValue={newValue.caption}
+            placeholder="Edit Caption"
             onChange={handleInputChange}
             required
           />
@@ -87,18 +85,18 @@ const Contribute = () => {
             type="url"
             name="url"
             id="url"
-            value={newMeme.url}
-            placeholder="Enter Meme URL"
+            defaultValue={newValue.url}
+            placeholder="Edit Meme URL"
             onChange={handleInputChange}
             required
           />
         </Form.Group>
         <Button name="submit" variant="primary" type="submit">
-          Submit
+          Edit
         </Button>
       </Form>
     </div>
   );
 };
 
-export default Contribute;
+export default EditMeme;

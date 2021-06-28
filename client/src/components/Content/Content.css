@@ -1,5 +1,14 @@
-.card-background {
-  background-color: rgb(0, 255, 255);
+#card-background {
+  background-color: #eeae7a;
+}
+
+.card-background:hover {
+  box-shadow: 0 8px 16px 0 rgba(250, 248, 248, 0.3);
+}
+
+.icons {
+  display: flex;
+  justify-content: space-between;
 }
 
 .username {
